@@ -7,4 +7,4 @@
   * Z-Buffer Testing
   * Pixle Shading
   * Texture Mapping
-  In addition, it supports multiple render targets and multiple shader resources. 
+  ####In addition, it supports multiple render targets and multiple shader resources. 
