@@ -11,3 +11,6 @@
   
 ## Requirement
   * Microsoft Visual Studio 2017
+
+## Screenshot
+![Screenshot](https://github.com/MORIZHIJIANDX/SimpleRasterizer/blob/master/render_result.png?raw=true)
