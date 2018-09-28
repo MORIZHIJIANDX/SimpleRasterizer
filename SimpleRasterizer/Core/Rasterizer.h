@@ -137,8 +137,9 @@ inline void RenderInsideBlock(const RasterizerInterpolationFun &pFun, const Tria
 	}
 }
 
-inline void RenderIntersectBlock(const RasterizerInterpolationFun &pFun, const Triangle &pTriangle, const float(&pInvCamZ)[3], const EdgeEquationSet &pSet, const int &pArea, const int &pX, const int &pY,
-	std::shared_ptr<ExtensionImage<float>> pDepthBuffer, std::vector<Fragment> &pFragments, std::vector<Vec2I> &pFragmentIndexes)
+inline void RenderIntersectBlock(const RasterizerInterpolationFun &pFun, const Triangle &pTriangle, const float(&pInvCamZ)[3], const EdgeEquationSet &pSet, 
+	const int &pArea, const int &pX, const int &pY, const Vec2I &pMaxPos, std::shared_ptr<ExtensionImage<float>> pDepthBuffer, 
+	std::vector<Fragment> &pFragments, std::vector<Vec2I> &pFragmentIndexes)
 {
 	EdgeEquationSet blockYSet = pSet;
 	EdgeEquationSet blockXSet;
@@ -182,7 +183,7 @@ inline void RenderIntersectBlock(const RasterizerInterpolationFun &pFun, const T
 	}
 }
 
-//œﬂ∂Œœ‡Ωª≤‚ ‘
+//√è√ü¬∂√é√è√†¬Ω¬ª¬≤√¢√ä√î
 inline bool FasterLineSegmentIntersection(const Vec2I &p1, const Vec2I &p2, const Vec2I &p3, const Vec2I &p4) {
 
 	Vec2I a = p2 - p1;
@@ -224,7 +225,7 @@ inline bool FasterLineSegmentIntersection(const Vec2I &p1, const Vec2I &p2, cons
 	return doIntersect;
 }
 
-//œﬂ∂Œ»˝Ω«–Œœ‡Ωª≤‚ ‘
+//√è√ü¬∂√é√à√Ω¬Ω√á√ê√é√è√†¬Ω¬ª¬≤√¢√ä√î
 inline bool SegmentTriangleIntersection(const Vec2I &p0, const Vec2I &p1, const Vec2I &v0, const Vec2I &v1, const Vec2I &v2)
 {
 	if (FasterLineSegmentIntersection(p0, p1, v0, v1) ||
@@ -237,7 +238,7 @@ inline bool SegmentTriangleIntersection(const Vec2I &p0, const Vec2I &p1, const 
 	return false;
 }
 
-//blockœﬂ∂Œ”Î»˝Ω«–Œœﬂ∂Œœ‡Ωª≤‚ ‘
+//block√è√ü¬∂√é√ì√´√à√Ω¬Ω√á√ê√é√è√ü¬∂√é√è√†¬Ω¬ª¬≤√¢√ä√î
 inline bool BlockTriangleSegmentIntersection(const Vec2I &ltCorner, const int &blockWidth, const int &blockHeight, const Vec2I &v0, const Vec2I &v1, const Vec2I &v2)
 {
 	Vec2I rtCorner(ltCorner.x + blockWidth, ltCorner.y);
@@ -309,8 +310,9 @@ public:
 		box_min.x = static_cast<int>(max(min(min(raster_pos[0].x, raster_pos[1].x), raster_pos[2].x), m_viewport.m_top_leftx));
 		box_min.y = static_cast<int>(max(min(min(raster_pos[0].y, raster_pos[1].y), raster_pos[2].y), m_viewport.m_top_lefty));
 
-		box_max.x = static_cast<int>(min(max(max(raster_pos[0].x, raster_pos[1].x), raster_pos[2].x), m_viewport.m_width - 1));
-		box_max.y = static_cast<int>(min(max(max(raster_pos[0].y, raster_pos[1].y), raster_pos[2].y), m_viewport.m_height - 1));
+		Vec2I max_raster_pos = Vec2I(m_viewport.m_width - m_viewport.m_top_leftx - 1, m_viewport.m_height - m_viewport.m_top_lefty - 1);
+		box_max.x = static_cast<int>(min(max(max(raster_pos[0].x, raster_pos[1].x), raster_pos[2].x), max_raster_pos.x));
+		box_max.y = static_cast<int>(min(max(max(raster_pos[0].y, raster_pos[1].y), raster_pos[2].y), max_raster_pos.y));
 
 		if (box_min.x >= box_max.x || box_min.y >= box_max.y)
 		{
@@ -383,21 +385,21 @@ public:
 						pointInsideAABB(aabbMin, aabbMax, raster_pos[1]) ||
 						pointInsideAABB(aabbMin, aabbMax, raster_pos[2]))
 					{
-						RenderIntersectBlock(m_inter_fun, pTriangle, inv_camera_z, leftTopCorner, tiangle_equation.value, x, y, pDepthBuffer, pFragments, pFragmentIndexes);
+						RenderIntersectBlock(m_inter_fun, pTriangle, inv_camera_z, leftTopCorner, tiangle_equation.value, x, y, max_raster_pos, pDepthBuffer, pFragments, pFragmentIndexes);
 						continue;
 					}
 										
 					if (BlockTriangleSegmentIntersection(aabbMin, blockSize - 1, blockSize - 1, 
 						raster_pos[0], raster_pos[1], raster_pos[2]))
 					{
-						RenderIntersectBlock(m_inter_fun, pTriangle, inv_camera_z, leftTopCorner, tiangle_equation.value, x, y, pDepthBuffer, pFragments, pFragmentIndexes);
+						RenderIntersectBlock(m_inter_fun, pTriangle, inv_camera_z, leftTopCorner, tiangle_equation.value, x, y, max_raster_pos, pDepthBuffer, pFragments, pFragmentIndexes);
 						continue;
 					}
 					
 					continue;
 				}
 
-				RenderIntersectBlock(m_inter_fun, pTriangle, inv_camera_z, leftTopCorner, tiangle_equation.value, x, y, pDepthBuffer, pFragments, pFragmentIndexes);
+				RenderIntersectBlock(m_inter_fun, pTriangle, inv_camera_z, leftTopCorner, tiangle_equation.value, x, y, max_raster_pos, pDepthBuffer, pFragments, pFragmentIndexes);
 			}
 			setY.incrementY(blockSize);
 		}
