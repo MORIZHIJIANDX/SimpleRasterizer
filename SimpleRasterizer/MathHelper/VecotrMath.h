@@ -17,6 +17,7 @@ Vec3<T> Transform(const Vec3<T> &v, const Matrix3x3<T> &m)
 	return temp;
 }
 
+//向量矩阵相乘(row-major order)
 template<typename T>
 Vec4<T> Transform(const Vec4<T> &v, const Matrix4x4<T> &m)
 {
@@ -59,43 +60,43 @@ Vec4<T> VectorReflect(const Vec4<T> &incident, const Vec4<T> &normal)
 template<typename T>
 Vec2<T> VectorAbs(const Vec2<T> &v)
 {
-	return Vec2<T>(std::abs(v.x), std::abs(v.y))
+	return Vec2<T>(std::abs(v.x), std::abs(v.y));
 }
 
 template<typename T>
 Vec3<T> VectorAbs(const Vec3<T> &v)
 {
-	return Vec3<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z))
+	return Vec3<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z));
 }
 
 template<typename T>
 Vec4<T> VectorAbs(const Vec4<T> &v)
 {
-	return Vec4<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z), std::abs(v.w))
+	return Vec4<T>(std::abs(v.x), std::abs(v.y), std::abs(v.z), std::abs(v.w));
 }
 
 template<typename T>
 Vec2<T> VectorClamp(const Vec2<T> &v, const Vec2<T> &min, const Vec2<T> &max)
 {
-	return Vec2<T>(std::max(std::min(v.x, max.x), min.x),
-		std::max(std::min(v.y, max.y), min.y))
+	return Vec2<T>(max(min(v.x, max.x), min.x),
+		max(min(v.y, max.y), min.y));
 }
 
 template<typename T>
 Vec3<T> VectorClamp(const Vec3<T> &v, const Vec3<T> &min, const Vec3<T> &max)
 {
-	return Vec3<T>(std::max(std::min(v.x, max.x), min.x), 
-		std::max(std::min(v.y, max.y), min.y), 
-		std::max(std::min(v.z, max.z), min.z))
+	return Vec3<T>(max(min(v.x, max.x), min.x),
+		max(min(v.y, max.y), min.y),
+		max(min(v.z, max.z), min.z));
 }
 
 template<typename T>
 Vec4<T> VectorClamp(const Vec4<T> &v, const Vec4<T> &min, const Vec4<T> &max)
 {
-	return Vec3<T>(std::max(std::min(v.x, max.x), min.x),
-		std::max(std::min(v.y, max.y), min.y),
-		std::max(std::min(v.z, max.z), min.z),
-		std::max(std::min(v.w, max.w), min.w))
+	return Vec3<T>(max(min(v.x, max.x), min.x),
+		max(min(v.y, max.y), min.y),
+		max(min(v.z, max.z), min.z),
+		max(min(v.w, max.w), min.w));
 }
 
 template<typename T>
