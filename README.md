@@ -14,3 +14,6 @@
 
 ## Screenshot
 ![Screenshot](https://github.com/MORIZHIJIANDX/SimpleRasterizer/blob/master/render_result.png?raw=true)
+
+## Details
+https://zhuanlan.zhihu.com/c_169490410
